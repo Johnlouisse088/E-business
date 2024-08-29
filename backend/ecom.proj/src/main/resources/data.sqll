@@ -1,0 +1,8 @@
+INSERT INTO product(name, desc, brand, price, category, date, available, quantity)
+VALUES ('Aspire', 'Laptop', 'Acer', '10000', 'Computer', '2024-07-28', true, 10);
+
+INSERT INTO product(name, desc, brand, price, category, date, available, quantity)
+VALUES ('Infinix note 10', 'Android', 'Infinix', '20000', 'Phone', '2024-07-28', false, 10);
+
+
+
