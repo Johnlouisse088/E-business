@@ -58,6 +58,7 @@ const Home = ({ selectedCategory }) => {
   }
   return (
     <>
+
       <div
         className="grid"
         style={{
@@ -65,7 +66,7 @@ const Home = ({ selectedCategory }) => {
           display: "grid",
           gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
           gap: "20px",
-          padding: "20px",
+          padding: "30px 50px",
         }}
       >
         {filteredProducts.length === 0 ? (
