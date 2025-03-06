@@ -11,6 +11,8 @@ import UpdateProduct from "./components/UpdateProduct";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import Success from "./components/Success";
+import Cancel from "./components/Cancel";
 
 
 function App() {
@@ -40,7 +42,7 @@ function App() {
     <AppProvider>
       <BrowserRouter>
         <Navbar onSelectCategory={handleCategorySelect}
-         />
+        />
         <Routes>
           <Route
             path="/"
@@ -50,10 +52,12 @@ function App() {
             }
           />
           <Route path="/add_product" element={<AddProduct />} />
-          <Route path="/product" element={<Product  />} />
-          <Route path="product/:id" element={<Product  />} />
+          <Route path="/product" element={<Product />} />
+          <Route path="product/:id" element={<Product />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/product/update/:id" element={<UpdateProduct />} />
+          <Route path="/stripe_checkout/success" element={<Success />} />
+          <Route path="/stripe_checkout/cancel" element={<Cancel />} />
         </Routes>
       </BrowserRouter>
     </AppProvider>
