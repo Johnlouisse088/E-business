@@ -12,7 +12,7 @@
 //@Service
 //public class StripeServicev1 {
 //
-//    @Value("${stripe.secretKey}")
+//    @Value("${application.stripe.secret-key}")
 //    private String secretKey;
 //
 //    public StripeResponse checkoutProducts(ProductRequest productRequest) {

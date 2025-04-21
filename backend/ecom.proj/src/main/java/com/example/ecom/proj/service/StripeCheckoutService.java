@@ -17,7 +17,7 @@ import java.util.Map;
 @Service
 public class StripeCheckoutService {
 
-    @Value("${stripe.secretKey}")
+    @Value("${application.stripe.secret-key}")
     private String secretKey;
 
     @Autowired

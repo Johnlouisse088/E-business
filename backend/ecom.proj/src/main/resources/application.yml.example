@@ -1,0 +1,18 @@
+#  Kebab-case is preferred in YAML
+
+spring:    # settings directly recognized by the Spring Framework, such as:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/my-e-commerce
+    username: your_db_username
+    password: your_db_password
+  jpa:
+    hibernate:
+      ddl-auto: update
+      show-sql: true
+      dialect: org.hibernate.dialect.PostgreSQLDialect
+
+application:   # This is custom — something you define yourself.
+  stripe:
+    secret-key: stripe_secret_key
+  jwt:
+    secret-key: your_jwt_secret_key_Base64
