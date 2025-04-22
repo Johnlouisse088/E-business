@@ -7,6 +7,7 @@ import com.example.ecom.proj.dto.AuthTokenDto;
 import com.example.ecom.proj.dto.UserLoginRequestDto;
 import com.example.ecom.proj.dto.UserRegisterRequestDto;
 import com.example.ecom.proj.dto.UserRegisterResponesDto;
+import com.example.ecom.proj.mapper.UserMapper;
 import com.example.ecom.proj.model.User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -27,16 +28,20 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final JWTService jwtService;
     private final TokenService tokenService;
+    private final UserMapper userMapper;
 
 
     public UserRegisterResponesDto register(UserRegisterRequestDto registerRequest) {
-        User user = User.builder()
-                .email(registerRequest.getEmail())
-                .firstname(registerRequest.getFirstname())
-                .lastname(registerRequest.getLastname())
-                .password(passwordEncoder.encode(registerRequest.getPassword()))    // Create an encoder later!!
-                .role(registerRequest.getRole())
-                .build();
+        // use mapper instead:
+//        User user = User.builder()
+//                .email(registerRequest.getEmail())
+//                .firstname(registerRequest.getFirstname())
+//                .lastname(registerRequest.getLastname())
+//                .password(passwordEncoder.encode(registerRequest.getPassword()))    // Create an encoder later!!
+//                .role(registerRequest.getRole())
+//                .build();
+        // mapper: DTO -> Entity
+        User user = userMapper.toEntity(registerRequest);
         User savedUser = userRepo.save(user);
 
         String accessToken = jwtService.generateAccessToken(savedUser);
@@ -45,16 +50,20 @@ public class AuthenticationService {
         // Saving token of the user
         tokenService.saveUserToken(accessToken, savedUser);
 
-        return UserRegisterResponesDto.builder()
-                .email(registerRequest.getEmail())
-                .firstname(registerRequest.getFirstname())
-                .lastname(registerRequest.getLastname())
-                .role(registerRequest.getRole())
-                .token(AuthTokenDto.builder()
-                        .accessToken(accessToken)
-                        .refreshToken(refreshToken)
-                        .build())
-                .build();
+        // use the mapper instead
+//        return UserRegisterResponesDto.builder()
+//                .email(savedUser.getEmail())
+//                .firstname(savedUser.getFirstname())
+//                .lastname(savedUser.getLastname())
+//                .role(savedUser.getRole())
+//                .token(AuthTokenDto.builder()
+//                        .accessToken(accessToken)
+//                        .refreshToken(refreshToken)
+//                        .build())
+//                .build();
+
+        // mapper: Entity -> DTO
+        return userMapper.toDto(savedUser, accessToken, refreshToken);
     }
 
     public AuthTokenDto login(UserLoginRequestDto loginRequest) {
@@ -66,12 +75,6 @@ public class AuthenticationService {
         );
         User user = userRepo.findByEmail(loginRequest.getEmail())    // Get the row user data using the email
                 .orElseThrow();
-
-//        // revoke latest token
-//        Token latestToken = tokenService.getLatestValidToken(user);     // Get the latest token
-//        if (!latestToken.isRevoked() && !latestToken.isExpired()){            // Check if that revoked and expired is false
-//            tokenService.revokeUserToken(latestToken);                                   // revoke them, set the revoked and expired to true
-//        }
 
         String accessToken = jwtService.generateAccessToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);

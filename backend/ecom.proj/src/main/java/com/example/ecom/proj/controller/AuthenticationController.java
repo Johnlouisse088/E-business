@@ -9,10 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -35,4 +32,7 @@ public class AuthenticationController {
     public ResponseEntity<AuthTokenDto> refreshToken(HttpServletRequest request, HttpServletResponse response) {
         return ResponseEntity.ok(service.refreshToken(request, response));
     }
+//
+//    @PatchMapping("/change-password")
+//    public ResponseEntity<T> changePassword()
 }
