@@ -6,6 +6,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -60,28 +61,35 @@ public class JWTService {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
+    public String extractUsername(String token) {   // sub from the field in token, are the same to username (email)
+        return extractClaim(token, Claims::getSubject);  // the token had sub, iat, exp; The sub is username (the email was called as a 'username';
+        // example: sub:"test@gmail.com"
+    }
 
+    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+        final Claims claims = extractAllClaims(token);
+        return claimsResolver.apply(claims);
+    }
 
+    private Claims extractAllClaims(String token) {
+        return Jwts
+                .parserBuilder()
+                .setSigningKey(getSignInKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    }
 
+    public boolean isTokenValid(String token, UserDetails userDetails, String userEmail) {
+        return (userEmail.equals(userDetails.getUsername()) && !isTokenExpired(token));
+    }
 
-//    public String extractUsername(String token) {   // sub from the field in token, are the same to username (email)
-//        return extractClaim(token, Claims::getSubject);  // the token had sub, iat, exp; The sub is username (the email was called as a 'username';
-//        // example: sub:"test@gmail.com"
-//    }
-//
-//    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
-//        final Claims claims = extractAllClaims(token);
-//        return claimsResolver.apply(claims);
-//    }
-//
-//    private Claims extractAllClaims(String token) {
-//        return Jwts
-//                .parserBuilder()
-//                .setSigningKey(getSignInKey())
-//                .build()
-//                .parseClaimsJws(token)
-//                .getBody();
-//    }
-//
+    public boolean isTokenExpired(String token) {
+        return extractExpiration(token).before(new Date());
+    }
+
+    private Date extractExpiration(String token) {
+        return extractClaim(token, Claims::getExpiration);
+    }
 
 }
