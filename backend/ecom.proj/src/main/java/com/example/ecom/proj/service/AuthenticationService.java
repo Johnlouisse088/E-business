@@ -15,6 +15,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
@@ -54,18 +57,29 @@ public class AuthenticationService {
     }
 
     public UserLoginResponseDto login(UserLoginRequestDto loginRequest) {
+        authenticationManager.authenticate(                   // Authenticate user credentials
+                new UsernamePasswordAuthenticationToken(
+                        loginRequest.getEmail(),
+                        loginRequest.getPassword()
+                )
+        );
+        User user = userRepo.findByEmail(loginRequest.getEmail())    // Get the row user data using the email
+                .orElseThrow();
 
-//        authenticationManager.authenticate(                   // Authenticates the user Or throws an exception if credentials are invalid
-//                new UsernamePasswordAuthenticationToken(
-//                        loginRequest.getEmail(),
-//                        loginRequest.getPassword()
-//                )
-//        );
-//        User user = userRepo.findByEmail(loginRequest.getEmail())    // Get the row user data using the email
-//                .orElseThrow();
-//        String accessToken = jwtService.generateAccessToken(user);
-//        String refreshToken = jwtService.generateRefreshToken(user);
+//        // revoke latest token
+//        Token latestToken = tokenService.getLatestValidToken(user);     // Get the latest token
+//        if (!latestToken.isRevoked() && !latestToken.isExpired()){            // Check if that revoked and expired is false
+//            tokenService.revokeUserToken(latestToken);                                   // revoke them, set the revoked and expired to true
+//        }
 
-        return null;
+        String accessToken = jwtService.generateAccessToken(user);
+        String refreshToken = jwtService.generateRefreshToken(user);
+        tokenService.revokeUserToken(user.getId());
+        tokenService.saveUserToken(accessToken, user);             // save the newly created token in database
+
+        return UserLoginResponseDto.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
     }
 }
