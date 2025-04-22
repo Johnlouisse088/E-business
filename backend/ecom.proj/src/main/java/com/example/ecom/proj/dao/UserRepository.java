@@ -1,6 +1,6 @@
 package com.example.ecom.proj.dao;
 
-import com.example.ecom.proj.model.User;
+import com.example.ecom.proj.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 

@@ -1,4 +1,4 @@
-package com.example.ecom.proj.model;
+package com.example.ecom.proj.entity;
 
 import jakarta.persistence.*;
 import lombok.*;

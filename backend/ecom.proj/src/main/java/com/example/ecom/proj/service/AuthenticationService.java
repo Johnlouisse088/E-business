@@ -8,7 +8,7 @@ import com.example.ecom.proj.dto.UserLoginRequestDto;
 import com.example.ecom.proj.dto.UserRegisterRequestDto;
 import com.example.ecom.proj.dto.UserRegisterResponesDto;
 import com.example.ecom.proj.mapper.UserMapper;
-import com.example.ecom.proj.model.User;
+import com.example.ecom.proj.entity.User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

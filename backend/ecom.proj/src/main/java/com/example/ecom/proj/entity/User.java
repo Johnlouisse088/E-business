@@ -1,4 +1,4 @@
-package com.example.ecom.proj.model;
+package com.example.ecom.proj.entity;
 
 import com.example.ecom.proj.enums.Role;
 import jakarta.persistence.*;

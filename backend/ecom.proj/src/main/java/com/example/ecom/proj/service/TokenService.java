@@ -1,8 +1,8 @@
 package com.example.ecom.proj.service;
 
 import com.example.ecom.proj.dao.TokenRepository;
-import com.example.ecom.proj.model.Token;
-import com.example.ecom.proj.model.User;
+import com.example.ecom.proj.entity.Token;
+import com.example.ecom.proj.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

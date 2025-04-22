@@ -2,7 +2,7 @@ package com.example.ecom.proj.service;
 
 import com.example.ecom.proj.dao.ProductRepository;
 import com.example.ecom.proj.dto.StripeResponse;
-import com.example.ecom.proj.model.Product;
+import com.example.ecom.proj.entity.Product;
 import com.stripe.Stripe;
 import com.stripe.param.checkout.SessionCreateParams;
 import com.stripe.model.checkout.Session;

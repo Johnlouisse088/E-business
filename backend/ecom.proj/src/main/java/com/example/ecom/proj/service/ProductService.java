@@ -1,11 +1,9 @@
 package com.example.ecom.proj.service;
 
 import com.example.ecom.proj.dao.ProductRepository;
-import com.example.ecom.proj.model.Product;
+import com.example.ecom.proj.entity.Product;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;

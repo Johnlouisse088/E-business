@@ -1,6 +1,6 @@
 package com.example.ecom.proj.dao;
 
-import com.example.ecom.proj.model.Token;
+import com.example.ecom.proj.entity.Token;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -18,4 +18,6 @@ public interface TokenRepository extends JpaRepository<Token, Integer> {
               AND t.revoked = false
             """, nativeQuery = true)
     List<Token> findValidUserTokens(Integer id);
+
+    Optional<Token> findByToken(String token);
 }

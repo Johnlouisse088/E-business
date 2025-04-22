@@ -3,7 +3,7 @@ package com.example.ecom.proj.mapper;
 import com.example.ecom.proj.dto.AuthTokenDto;
 import com.example.ecom.proj.dto.UserRegisterRequestDto;
 import com.example.ecom.proj.dto.UserRegisterResponesDto;
-import com.example.ecom.proj.model.User;
+import com.example.ecom.proj.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;

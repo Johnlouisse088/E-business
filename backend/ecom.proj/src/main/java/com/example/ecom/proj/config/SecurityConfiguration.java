@@ -5,12 +5,14 @@ import com.example.ecom.proj.enums.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import static org.springframework.http.HttpMethod.*;
 import static org.springframework.http.HttpMethod.DELETE;
@@ -32,10 +34,12 @@ public class SecurityConfiguration {
             "/configuration/security",
             "/swagger-ui/**",
             "/webjars/**",
-            "/swagger-ui.html"
+            "/swagger-ui.html",
     };
-//    private final AuthenticationProvider authenticationProvider;
 
+    private final AuthenticationProvider authenticationProvider;
+    private final JWTService jwtService;
+    private final JwtAuthenticationFilter jwtAuthFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -50,10 +54,9 @@ public class SecurityConfiguration {
                                 .requestMatchers(DELETE, "/api/v1/management/**").hasAnyAuthority(Permission.ADMIN_DELETE.name(), Permission.MANAGER_DELETE.name())
                                 .anyRequest().authenticated()  // Other endpoints need an authentication
                 )
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));  // STATELESS - We're going to use the token (Like JWT)
-//                .authenticationProvider(authenticationProvider);  // During login, Spring uses your authenticationProvider to check the user’s credentials.
-//                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)  // Before Spring's built-in UsernamePasswordAuthenticationFilter runs, execute my custom jwtAuthFilter
-
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))  // STATELESS - We're going to use the token (Like JWT)
+                .authenticationProvider(authenticationProvider)   // During login, Spring uses your authenticationProvider to check the user’s credentials.
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);  // Before Spring's built-in UsernamePasswordAuthenticationFilter runs, execute the jwtAuthFilter (for token authentication)
 
         return http.build();
     }
