@@ -45,7 +45,6 @@ public class JWTService {
     }
 
     private String buildToken(Map<String, Object> extraClaims, UserDetails userDetails, long expiration) {
-        System.out.println("secretKey: " + secretKey);
         // Generate token
         return Jwts
                 .builder()

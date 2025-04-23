@@ -1,5 +1,6 @@
 package com.example.ecom.proj.controller;
 
+import com.example.ecom.proj.constant.SecurityConstants;
 import com.example.ecom.proj.dto.UserLoginRequestDto;
 import com.example.ecom.proj.dto.AuthTokenDto;
 import com.example.ecom.proj.dto.UserRegisterRequestDto;
@@ -12,23 +13,23 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/auth")
+@RequestMapping(SecurityConstants.AUTH_BASE)
 public class AuthenticationController {
 
     @Autowired
     private AuthenticationService service;
 
-    @PostMapping("/register")
+    @PostMapping(SecurityConstants.REGISTER_URL)
     public ResponseEntity<UserRegisterResponesDto> register(@RequestBody UserRegisterRequestDto registerRequest) {
         return ResponseEntity.ok(service.register(registerRequest));
     }
 
-    @PostMapping("/login")
+    @PostMapping(SecurityConstants.LOGIN_URL)
     public ResponseEntity<AuthTokenDto> login(@RequestBody UserLoginRequestDto loginRequest) {
         return ResponseEntity.ok(service.login(loginRequest));
     }
 
-    @PostMapping("/refresh-token")
+    @PostMapping(SecurityConstants.REFRESH_TOKEN_URL)
     public ResponseEntity<AuthTokenDto> refreshToken(HttpServletRequest request, HttpServletResponse response) {
         return ResponseEntity.ok(service.refreshToken(request, response));
     }

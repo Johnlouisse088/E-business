@@ -1,7 +1,9 @@
 package com.example.ecom.proj.config;
 
+import com.example.ecom.proj.constant.SecurityConstants;
 import com.example.ecom.proj.enums.Permission;
 import com.example.ecom.proj.enums.Role;
+import com.example.ecom.proj.service.LogoutService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,6 +13,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -40,6 +43,7 @@ public class SecurityConfiguration {
     private final AuthenticationProvider authenticationProvider;
     private final JWTService jwtService;
     private final JwtAuthenticationFilter jwtAuthFilter;
+    private final LogoutService myLogoutHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -56,8 +60,12 @@ public class SecurityConfiguration {
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))  // STATELESS - We're going to use the token (Like JWT)
                 .authenticationProvider(authenticationProvider)   // During login, Spring uses your authenticationProvider to check the user’s credentials.
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);  // Before Spring's built-in UsernamePasswordAuthenticationFilter runs, execute the jwtAuthFilter (for token authentication)
-
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class) // Before Spring's built-in UsernamePasswordAuthenticationFilter runs, execute the jwtAuthFilter (for token authentication)
+                .logout(logout ->
+                        logout.logoutUrl(SecurityConstants.LOGOUT_FULL_URL)
+                                .addLogoutHandler(myLogoutHandler)
+                                .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext())
+                );
         return http.build();
     }
 }

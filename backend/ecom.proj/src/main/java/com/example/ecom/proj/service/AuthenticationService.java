@@ -1,12 +1,14 @@
 package com.example.ecom.proj.service;
 
 import com.example.ecom.proj.config.JWTService;
+import com.example.ecom.proj.constant.SecurityConstants;
 import com.example.ecom.proj.dao.TokenRepository;
 import com.example.ecom.proj.dao.UserRepository;
 import com.example.ecom.proj.dto.AuthTokenDto;
 import com.example.ecom.proj.dto.UserLoginRequestDto;
 import com.example.ecom.proj.dto.UserRegisterRequestDto;
 import com.example.ecom.proj.dto.UserRegisterResponesDto;
+import com.example.ecom.proj.constant.ErrorMessageConstants;
 import com.example.ecom.proj.mapper.UserMapper;
 import com.example.ecom.proj.entity.User;
 import jakarta.servlet.http.HttpServletRequest;
@@ -92,25 +94,23 @@ public class AuthenticationService {
         final String refreshToken;
         final String userEmail;
 
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            throw new RuntimeException("Missing or invalid Authorization header");
+        if (authHeader == null || !authHeader.startsWith(SecurityConstants.TOKEN_PREFIX)) {
+            throw new RuntimeException(ErrorMessageConstants.MISSING_AUTH_HEADER);
         }
 
         refreshToken = authHeader.substring(7);
         userEmail = jwtService.extractUsername(refreshToken);
 
         User user = userRepo.findByEmail(userEmail)
-                .orElseThrow(() -> new RuntimeException("User nor found"));
+                .orElseThrow(() -> new RuntimeException(ErrorMessageConstants.USER_NOT_FOUND));
 
         if (!jwtService.isTokenValid(refreshToken, user, userEmail)) {
-            throw new RuntimeException("Invalid refresh token");
+            throw new RuntimeException(ErrorMessageConstants.INVALID_REFRESH_TOKEN);
         }
 
         String accessToken = jwtService.generateAccessToken(user);
         tokenService.revokeUserToken(user.getId());
-        System.out.println("test");
         tokenService.saveUserToken(accessToken, user);
-        System.out.println("testt");
         return AuthTokenDto.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
