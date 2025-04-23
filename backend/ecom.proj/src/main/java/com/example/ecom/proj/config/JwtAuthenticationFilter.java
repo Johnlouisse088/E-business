@@ -18,6 +18,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Set;
 
 @Component
 @RequiredArgsConstructor
@@ -32,10 +34,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
 
         // It didn't authenticate the /api/v1/auth/** like login, register
-        if (request.getServletPath().contains(SecurityConstants.AUTH_BASE)) {
-            filterChain.doFilter(request, response); // next filter chain
+//        if (request.getServletPath().contains(SecurityConstants.AUTH_BASE)) {
+//            filterChain.doFilter(request, response); // next filter chain
+//            return;
+//        }
+
+        // Only skip the routes in AUTH_WHITELIST
+        if (SecurityConstants.AUTH_WHITELIST.contains(request.getServletPath())) {
+            filterChain.doFilter(request, response);
             return;
         }
+
         final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         final String token;
         final String userEmail;

@@ -1,5 +1,7 @@
 package com.example.ecom.proj.constant;
 
+import java.util.Set;
+
 public class SecurityConstants {
 
     // Token-related
@@ -20,10 +22,21 @@ public class SecurityConstants {
     public static final String LOGIN_URL = "/login";
     public static final String REGISTER_URL = "/register";
     public static final String REFRESH_TOKEN_URL = "/refresh-token";
+    public static final String CHANGE_PASSWORD_URL = "/change-password";
     public static final String LOGOUT_URL = "/logout";
     public static final String LOGOUT_FULL_URL = AUTH_BASE + LOGOUT_URL;
 
     // Security context
     public static final String CONTEXT_USER_ATTR = "currentUser";
+    public static final String SUCCESSFULLY_CHANGE_PASSWORD = "Password changed successfully";
+
+    // No need to authenticate
+    public static final Set<String> AUTH_WHITELIST = Set.of(
+            "/api/v1/auth/login",
+            "/api/v1/auth/register",
+            "/api/v1/auth/refresh-token",
+            "/api/v1/auth/forgot-password",
+            "/api/v1/auth/reset-password"
+    );
 
 }

@@ -25,6 +25,8 @@ public class ErrorMessageConstants {
     // === Validation Errors ===
     public static final String INVALID_EMAIL_FORMAT = "Email format is invalid";
     public static final String PASSWORD_TOO_WEAK = "Password must be at least 8 characters long and contain a number";
+    public static final String WRONG_PASSWORD = "Wrong password";
+    public static final String NOT_SAME_PASSWORD = "Password are not the same";
 
     // === Server / Generic Errors ===
     public static final String INTERNAL_SERVER_ERROR = "An unexpected error occurred. Please try again later";

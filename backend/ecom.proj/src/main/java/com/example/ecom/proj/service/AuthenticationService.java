@@ -4,10 +4,7 @@ import com.example.ecom.proj.config.JWTService;
 import com.example.ecom.proj.constant.SecurityConstants;
 import com.example.ecom.proj.dao.TokenRepository;
 import com.example.ecom.proj.dao.UserRepository;
-import com.example.ecom.proj.dto.AuthTokenDto;
-import com.example.ecom.proj.dto.UserLoginRequestDto;
-import com.example.ecom.proj.dto.UserRegisterRequestDto;
-import com.example.ecom.proj.dto.UserRegisterResponesDto;
+import com.example.ecom.proj.dto.*;
 import com.example.ecom.proj.constant.ErrorMessageConstants;
 import com.example.ecom.proj.mapper.UserMapper;
 import com.example.ecom.proj.entity.User;
@@ -20,11 +17,13 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
+
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
 
-    private final UserRepository userRepo;
+    private final UserRepository userRepository;
     private final TokenRepository tokenRepo;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
@@ -44,7 +43,7 @@ public class AuthenticationService {
 //                .build();
         // mapper: DTO -> Entity
         User user = userMapper.toEntity(registerRequest);
-        User savedUser = userRepo.save(user);
+        User savedUser = userRepository.save(user);
 
         String accessToken = jwtService.generateAccessToken(savedUser);
         String refreshToken = jwtService.generateRefreshToken(savedUser);
@@ -75,7 +74,7 @@ public class AuthenticationService {
                         loginRequest.getPassword()
                 )
         );
-        User user = userRepo.findByEmail(loginRequest.getEmail())    // Get the row user data using the email
+        User user = userRepository.findByEmail(loginRequest.getEmail())    // Get the row user data using the email
                 .orElseThrow();
 
         String accessToken = jwtService.generateAccessToken(user);
@@ -101,7 +100,7 @@ public class AuthenticationService {
         refreshToken = authHeader.substring(7);
         userEmail = jwtService.extractUsername(refreshToken);
 
-        User user = userRepo.findByEmail(userEmail)
+        User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new RuntimeException(ErrorMessageConstants.USER_NOT_FOUND));
 
         if (!jwtService.isTokenValid(refreshToken, user, userEmail)) {
@@ -114,6 +113,22 @@ public class AuthenticationService {
         return AuthTokenDto.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
+                .build();
+    }
+
+    public MessageResponseDto changePassword(UserChangePasswordRequestDto changePasswordRequest, User currentUser) throws IllegalAccessException {
+        if (!passwordEncoder.matches(changePasswordRequest.getCurrentPassword(), currentUser.getPassword())) {
+            throw new IllegalAccessException(ErrorMessageConstants.WRONG_PASSWORD);
+        }
+        if (!changePasswordRequest.getNewPassword().equals(changePasswordRequest.getConfirmPassword())) {
+            throw new IllegalAccessException(ErrorMessageConstants.NOT_SAME_PASSWORD);
+        }
+
+        currentUser.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
+        userRepository.save(currentUser);
+
+        return MessageResponseDto.builder()
+                .message(SecurityConstants.SUCCESSFULLY_CHANGE_PASSWORD)
                 .build();
     }
 }

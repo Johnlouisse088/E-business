@@ -1,16 +1,17 @@
 package com.example.ecom.proj.controller;
 
 import com.example.ecom.proj.constant.SecurityConstants;
-import com.example.ecom.proj.dto.UserLoginRequestDto;
-import com.example.ecom.proj.dto.AuthTokenDto;
-import com.example.ecom.proj.dto.UserRegisterRequestDto;
-import com.example.ecom.proj.dto.UserRegisterResponesDto;
+import com.example.ecom.proj.dto.*;
+import com.example.ecom.proj.entity.User;
 import com.example.ecom.proj.service.AuthenticationService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 
 @RestController
 @RequestMapping(SecurityConstants.AUTH_BASE)
@@ -33,7 +34,10 @@ public class AuthenticationController {
     public ResponseEntity<AuthTokenDto> refreshToken(HttpServletRequest request, HttpServletResponse response) {
         return ResponseEntity.ok(service.refreshToken(request, response));
     }
-//
-//    @PatchMapping("/change-password")
-//    public ResponseEntity<T> changePassword()
+
+    @PatchMapping(SecurityConstants.CHANGE_PASSWORD_URL)
+    public ResponseEntity<MessageResponseDto> changePassword(@RequestBody UserChangePasswordRequestDto changePasswordRequest,
+                                                             @AuthenticationPrincipal User currentUser) throws IllegalAccessException {
+        return ResponseEntity.ok(service.changePassword(changePasswordRequest, currentUser));
+    }
 }
