@@ -19,13 +19,13 @@ import java.util.function.Function;
 @Service
 public class JWTService {
 
-    @Value("${application.jwt.secret-key}")
+    @Value("${app.jwt.secret-key}")
     private String secretKey;
 
-    @Value("${application.jwt.access-token.expiration}")
+    @Value("${app.jwt.access-token.expiration}")
     private long accessExpiration;
 
-    @Value("${application.jwt.refresh-token.expiration}")
+    @Value("${app.jwt.refresh-token.expiration}")
     private long refreshExpiration;
 
     // Call another method
